@@ -7,12 +7,21 @@ socket = ""
 
 def variating(socket):
     request_fix = request.lower()
-    for word in {"привет", "хай", "здарова", "ку", "старт", "салам"}:
+    for word in {"привет", "хай", "здарова", "ку", "старт", "салам", "qq"}:
         if word in request_fix:
             return greeting(request_fix)
+    for word in {"вернулся"}:
+        if word in request_fix:
+            return comeback(request_fix)
     for word in {"пока", "алибидерчи", "бб", "стоп"}:
         if word in request_fix:
             return farewell(request_fix)
+    for word in {"калькулятор", "счет", "считать"}:
+        if word in request_fix:
+            rqst = ""
+            result = calculator(rqst)
+            if result == "вернулся":
+                return comeback(result)
 
 def greeting(socket):
     def_sct = "Приветствую вас"
@@ -22,6 +31,16 @@ def greeting(socket):
         sct = def_sct + ", сэр!"
     elif rnd == 1:
         sct = "Добро пожаловать!"
+    else:
+        sct = def_sct + "!"
+    return sct
+
+def comeback(socket):
+    def_sct = "С возвращением"
+    sct = ""
+    rnd = randint(0,1)
+    if rnd == 0:
+        sct = def_sct + ", сэр!"
     else:
         sct = def_sct + "!"
     return sct
@@ -51,6 +70,44 @@ def farewell(socket):
         print("Завершение работы...")
         sleep(1)
     return exit()
+
+def calculator(socket):
+    operators = {"+", "-"}
+    rqst = ""
+    
+    while True:
+        rqst = input("calc mod >>> ")
+        
+        fix_rqst = rqst.lower()
+        cleaned = fix_rqst.replace(" ", "")
+        for word in {"выход"}:
+            if word in cleaned:
+                return "вернулся"
+        
+        numbers = []
+        operators_list = []
+        current_num = ""
+        
+        for char in cleaned:
+            if char.isdigit() or char == '.':
+                current_num += char
+            elif char in operators:
+                if current_num:
+                    numbers.append(float(current_num) if '.' in current_num else int(current_num))
+                    current_num = ""
+                operators_list.append(char)
+        
+        if current_num:
+            numbers.append(float(current_num) if '.' in current_num else int(current_num))
+        
+        result = numbers[0]
+        for i, op in enumerate(operators_list):
+            if op == '+':
+                result += numbers[i + 1]
+            elif op == '-':
+                result -= numbers[i + 1]
+        
+        print(f"Ответ: {result}")
 
 while True:
     request = input(">>> ")
