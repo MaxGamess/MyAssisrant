@@ -3,14 +3,16 @@ from random import *
 from sys import *
 import datetime
 from datetime import datetime, date, time, timedelta
+import pyttsx3
+import threading
 
 request = ""
 socket = ""
 
 def variating(socket):
     request_fix = request.lower()
-    ultimate_words = {"привет", "хай", "здарова", "ку", "старт", "салам", "qq", "вернулся", "пока", "алибидерчи", "бб", "стоп", "калькулятор", "счет", "считать", "год", "дата", "время", "день"}
-    for word in {"привет", "хай", "здарова", "ку", "старт", "салам", "qq"}:
+    ultimate_words = {"привет", "хай", "здарова", "ку", "йоу", "старт", "салам", "qq", "вернулся", "пока", "алибидерчи", "бб", "стоп", "калькулятор", "счет", "считать", "год", "дата", "время", "день"}
+    for word in {"привет", "хай", "здарова", "ку", "старт", "салам", "qq", "йоу"}:
         if word in request_fix:
             return greeting(request_fix)
     for word in {"вернулся"}:
@@ -72,6 +74,7 @@ def farewell(socket):
     if rnd == 0:
         sct = def_sct + ", сэр!"
         print(sct)
+        say_async(sct)
         sleep(3)
         print("Завершение работы...")
         sleep(1)
@@ -79,6 +82,7 @@ def farewell(socket):
     elif rnd == 1:
         sct = "До следующего сеанса!"
         print(sct)
+        say_async(sct)
         sleep(3)
         print("Завершение работы...")
         sleep(1)
@@ -86,9 +90,11 @@ def farewell(socket):
     else:
         sct = def_sct + "!"
         print(sct)
+        say_async(sct)
         sleep(3)
         print("Завершение работы...")
         sleep(1)
+    
     return exit()
 
 def date(socket):
@@ -143,7 +149,7 @@ def date(socket):
         
     elif "год" in socket:
         today = str(datetime.now())
-        now_day_year = int(today[:4])
+        now_day_year = today[:4]
         return now_day_year
         
 
@@ -292,11 +298,24 @@ def calculator(socket):
         except Exception as e:
             print(f"Ошибка: {e}")
 
+def say_async(socket):
+    def _say():
+        try:
+            engine = pyttsx3.init()
+            engine.say(socket)
+            engine.runAndWait()
+            engine.stop()
+        except:
+            pass
+    threading.Thread(target=_say, daemon=True).start()
+
 try:
     while True:
         request = input(">>> ")
         socket = variating(request)
         print(socket)
+        say_async(socket)
+    
 except KeyboardInterrupt:
     print()
     stop = ""
