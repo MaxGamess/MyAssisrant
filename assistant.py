@@ -7,6 +7,7 @@ socket = ""
 
 def variating(socket):
     request_fix = request.lower()
+    ultimate_words = {"привет", "хай", "здарова", "ку", "старт", "салам", "qq", "вернулся", "пока", "алибидерчи", "бб", "стоп", "калькулятор", "счет", "считать"}
     for word in {"привет", "хай", "здарова", "ку", "старт", "салам", "qq"}:
         if word in request_fix:
             return greeting(request_fix)
@@ -22,7 +23,8 @@ def variating(socket):
             result = calculator(rqst)
             if result == "вернулся":
                 return comeback(result)
-        else:
+    for word in ultimate_words:
+        if word not in request_fix:
             result = ""
             return default(result)
 
@@ -85,7 +87,7 @@ def farewell(socket):
     return exit()
 
 def calculator(socket):
-    operators = {"+", "-"}
+    operators = {"+", "-", "*", "/", "^"}
     rqst = ""
     
     while True:
@@ -93,8 +95,10 @@ def calculator(socket):
         
         fix_rqst = rqst.lower()
         cleaned = fix_rqst.replace(" ", "")
-        for word in {"выход"}:
-            if word in cleaned:
+        word = set("0123456789+-*/^.")
+        char = ""
+        for char in cleaned:
+            if char not in word:
                 return "вернулся"
         
         numbers = []
@@ -112,6 +116,23 @@ def calculator(socket):
         
         if current_num:
             numbers.append(float(current_num) if '.' in current_num else int(current_num))
+        
+        i = 0
+        while i < len(operators_list):
+            if operators_list[i] in ('*', '/'):
+                if operators_list[i] == '*':
+                    result = numbers[i] * numbers[i + 1]
+                else:
+                    if numbers[i + 1] == 0:
+                        print("Ошибка: деление на ноль!")
+                        break
+                    result = numbers[i] / numbers[i + 1]
+                
+                numbers[i] = result
+                del numbers[i + 1]
+                del operators_list[i]
+            else:
+                i += 1
         
         result = numbers[0]
         for i, op in enumerate(operators_list):
