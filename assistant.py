@@ -22,6 +22,19 @@ def variating(socket):
             result = calculator(rqst)
             if result == "вернулся":
                 return comeback(result)
+        else:
+            result = ""
+            return default(result)
+
+def default(socket):
+    text = "Извините, но в моей базе не заготовлено ответа на данный вопрос"
+    sct = ""
+    rnd = randint(0,1)
+    if rnd == 0:
+        sct = text
+    else:
+        sct = "Простите, но у меня нет ответа на данный вопрос"
+    return sct
 
 def greeting(socket):
     def_sct = "Приветствую вас"
