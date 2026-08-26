@@ -1,13 +1,15 @@
 from time import *
 from random import *
 from sys import *
+import datetime
+from datetime import datetime, date, time, timedelta
 
 request = ""
 socket = ""
 
 def variating(socket):
     request_fix = request.lower()
-    ultimate_words = {"привет", "хай", "здарова", "ку", "старт", "салам", "qq", "вернулся", "пока", "алибидерчи", "бб", "стоп", "калькулятор", "счет", "считать"}
+    ultimate_words = {"привет", "хай", "здарова", "ку", "старт", "салам", "qq", "вернулся", "пока", "алибидерчи", "бб", "стоп", "калькулятор", "счет", "считать", "год", "дата", "время", "день"}
     for word in {"привет", "хай", "здарова", "ку", "старт", "салам", "qq"}:
         if word in request_fix:
             return greeting(request_fix)
@@ -23,6 +25,9 @@ def variating(socket):
             result = calculator(rqst)
             if result == "вернулся":
                 return comeback(result)
+    for word in {"дата", "день", "время", "год"}:
+        if word in request_fix:
+            return date(request_fix)
     for word in ultimate_words:
         if word not in request_fix:
             result = ""
@@ -85,6 +90,62 @@ def farewell(socket):
         print("Завершение работы...")
         sleep(1)
     return exit()
+
+def date(socket):
+    rnd = randint(0,2)
+    today = ""
+    sct = ""
+    now_time = ""
+    now_date = ""
+    current_time = localtime()
+    current_weekday = 0
+    
+    days = {
+        1: "понедельник",
+        2: "вторник",
+        3: "среда",
+        4: "четверг",
+        5: "пятница",
+        6: "суббота",
+        7: "воскресенье"
+    }
+    
+    hours = current_time.tm_hour
+    minutes = current_time.tm_min
+    seconds = current_time.tm_sec
+    
+    if rnd == 0:
+        sct = "На данный момент: "
+    elif rnd == 1:
+        sct = "Прямо сейчас: "
+    else:
+        sct = "Щас: "
+    
+    if "дата" in socket:
+        today = str(datetime.now())
+        now_date = sct + today[:10]
+        return now_date
+        
+    elif "время" in socket:
+        now_time = f"{sct}{hours} часов, {minutes} минут, {seconds} секунд"
+        return now_time
+        
+    elif "день" in socket:
+        today = str(datetime.now())
+        now_day_year = int(today[:4])
+        now_day_month = int(today[5:7])
+        now_day_day = int(today[9:10])
+        current_weekday = datetime(now_day_year, now_day_month, now_day_day)
+        now_day = current_weekday.weekday()
+        
+        now_weekday = sct + days[now_day]
+        return now_weekday
+        
+    elif "год" in socket:
+        today = str(datetime.now())
+        now_day_year = int(today[:4])
+        return now_day_year
+        
 
 def calculator(socket):
     operators = {"+", "-", "*", "/", "^"}
