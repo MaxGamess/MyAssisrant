@@ -122,7 +122,12 @@ def calculator(socket):
         
         print(f"Ответ: {result}")
 
-while True:
-    request = input(">>> ")
-    socket = variating(request)
-    print(socket)
+try:
+    while True:
+        request = input(">>> ")
+        socket = variating(request)
+        print(socket)
+except KeyboardInterrupt:
+    print()
+    stop = ""
+    farewell(stop)
