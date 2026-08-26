@@ -95,53 +95,141 @@ def calculator(socket):
         
         fix_rqst = rqst.lower()
         cleaned = fix_rqst.replace(" ", "")
-        word = set("0123456789+-*/^.")
+        word = set("0123456789+-*/^().")
         char = ""
+        valid = True
         for char in cleaned:
             if char not in word:
                 return "вернулся"
+                valid = False
+                break
+        if not valid:
+            continue
         
-        numbers = []
-        operators_list = []
-        current_num = ""
-        
-        for char in cleaned:
-            if char.isdigit() or char == '.':
-                current_num += char
-            elif char in operators:
+        try:
+            while '(' in cleaned:
+                
+                start = -1
+                end = -1
+                
+                for i in range(len(cleaned)):
+                    if cleaned[i] == '(':
+                        start = i
+                    elif cleaned[i] == ')' and start != -1:
+                        end = i
+                        break
+                
+                if start == -1 or end == -1:
+                    print("Обнаружено несоответствие скобок!")
+                    break
+                
+                inner_expr = cleaned[start + 1:end]
+                
+                numbers = []
+                operators_list = []
+                current_num = ""
+                
+                for char in inner_expr:
+                    if char.isdigit() or char == '.':
+                        current_num += char
+                    elif char in operators:
+                        if current_num:
+                            numbers.append(float(current_num) if '.' in current_num else int(current_num))
+                            current_num = ""
+                        operators_list.append(char)
+                
                 if current_num:
                     numbers.append(float(current_num) if '.' in current_num else int(current_num))
-                    current_num = ""
-                operators_list.append(char)
-        
-        if current_num:
-            numbers.append(float(current_num) if '.' in current_num else int(current_num))
-        
-        i = 0
-        while i < len(operators_list):
-            if operators_list[i] in ('*', '/'):
-                if operators_list[i] == '*':
-                    result = numbers[i] * numbers[i + 1]
-                else:
-                    if numbers[i + 1] == 0:
-                        print("Ошибка: деление на ноль!")
-                        break
-                    result = numbers[i] / numbers[i + 1]
                 
-                numbers[i] = result
-                del numbers[i + 1]
-                del operators_list[i]
-            else:
-                i += 1
+                i = 0
+                while i < len(operators_list):
+                    if operators_list[i] == '^':
+                        result = numbers[i] ** numbers[i + 1]
+                        numbers[i] = result
+                        del numbers[i + 1]
+                        del operators_list[i]
+                    else:
+                        i += 1
+                
+                i = 0
+                while i < len(operators_list):
+                    if operators_list[i] in ('*', '/'):
+                        if operators_list[i] == '*':
+                            result = numbers[i] * numbers[i + 1]
+                        else:
+                            if numbers[i + 1] == 0:
+                                print("Ошибка: деление на ноль!")
+                                break
+                            result = numbers[i] / numbers[i + 1]
+                        
+                        numbers[i] = result
+                        del numbers[i + 1]
+                        del operators_list[i]
+                    else:
+                        i += 1
+                
+                result = numbers[0]
+                for i, op in enumerate(operators_list):
+                    if op == '+':
+                        result += numbers[i + 1]
+                    elif op == '-':
+                        result -= numbers[i + 1]
+                
+                cleaned = cleaned[:start] + str(result) + cleaned[end + 1:]
+            
+            numbers = []
+            operators_list = []
+            current_num = ""
+            
+            for char in cleaned:
+                if char.isdigit() or char == '.':
+                    current_num += char
+                elif char in operators:
+                    if current_num:
+                        numbers.append(float(current_num) if '.' in current_num else int(current_num))
+                        current_num = ""
+                    operators_list.append(char)
+            
+            if current_num:
+                numbers.append(float(current_num) if '.' in current_num else int(current_num))
+            
+            i = 0
+            while i < len(operators_list):
+                if operators_list[i] == '^':
+                    result = numbers[i] ** numbers[i + 1]
+                    numbers[i] = result
+                    del numbers[i + 1]
+                    del operators_list[i]
+                else:
+                    i += 1
+            
+            i = 0
+            while i < len(operators_list):
+                if operators_list[i] in ('*', '/'):
+                    if operators_list[i] == '*':
+                        result = numbers[i] * numbers[i + 1]
+                    else:
+                        if numbers[i + 1] == 0:
+                            print("Ошибка: деление на ноль!")
+                            break
+                        result = numbers[i] / numbers[i + 1]
+                   
+                    numbers[i] = result
+                    del numbers[i + 1]
+                    del operators_list[i]
+                else:
+                    i += 1
+            
+            result = numbers[0]
+            for i, op in enumerate(operators_list):
+                if op == '+':
+                    result += numbers[i + 1]
+                elif op == '-':
+                    result -= numbers[i + 1]
+            print(f"Ответ: {result}")
         
-        result = numbers[0]
-        for i, op in enumerate(operators_list):
-            if op == '+':
-                result += numbers[i + 1]
-            elif op == '-':
-                result -= numbers[i + 1]
-        
-        print(f"Ответ: {result}")
+        except Exception as e:
+            print(f"Ошибка: {e}")
 
 try:
     while True:
