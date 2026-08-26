@@ -11,7 +11,7 @@ socket = ""
 
 def variating(socket):
     request_fix = request.lower()
-    ultimate_words = {"привет", "хай", "здарова", "ку", "йоу", "старт", "салам", "qq", "вернулся", "пока", "алибидерчи", "бб", "стоп", "калькулятор", "счет", "считать", "год", "дата", "время", "день"}
+    ultimate_words = {"привет", "хай", "здарова", "ку", "йоу", "старт", "салам", "qq", "вернулся", "пока", "алибидерчи", "бб", "стоп", "калькулятор", "счет", "считать", "год", "дата", "время", "день", "суток"}
     for word in {"привет", "хай", "здарова", "ку", "старт", "салам", "qq", "йоу"}:
         if word in request_fix:
             return greeting(request_fix)
@@ -27,7 +27,7 @@ def variating(socket):
             result = calculator(rqst)
             if result == "вернулся":
                 return comeback(result)
-    for word in {"дата", "день", "время", "год"}:
+    for word in {"дата", "день", "время", "год", "суток"}:
         if word in request_fix:
             return date(request_fix)
     for word in ultimate_words:
@@ -131,11 +131,11 @@ def date(socket):
         today = str(datetime.now())
         now_date = sct + today[:10]
         return now_date
-        
-    elif "время" in socket:
+    
+    elif "время" in socket and "суток" not in socket:
         now_time = f"{sct}{hours} часов, {minutes} минут, {seconds} секунд"
         return now_time
-        
+    
     elif "день" in socket:
         today = str(datetime.now())
         now_day_year = int(today[:4])
@@ -145,12 +145,20 @@ def date(socket):
         now_day = current_weekday.weekday()
         
         now_weekday = sct + days[now_day]
-        return now_weekday
-        
+        return sct + now_weekday
+    
     elif "год" in socket:
         today = str(datetime.now())
         now_day_year = today[:4]
-        return now_day_year
+        return sct + now_day_year
+    
+    elif "суток" in socket:
+        if hours >= 0 and hours < 4: day_time = "ночь"
+        elif hours >= 4 and hours < 12: day_time = "утро"
+        elif hours >= 12 and hours < 16: day_time = "день"
+        elif hours >= 16 and hours < 24: day_time = "вечер"
+        
+        return sct + day_time
         
 
 def calculator(socket):
