@@ -5,13 +5,16 @@ import datetime
 from datetime import datetime, date, time, timedelta
 import pyttsx3
 import threading
+import webbrowser
+import subprocess
+import os
 
 request = ""
 socket = ""
 
 def variating(socket):
     request_fix = request.lower()
-    ultimate_words = {"привет", "хай", "здарова", "ку", "йоу", "старт", "салам", "qq", "вернулся", "пока", "алибидерчи", "бб", "стоп", "калькулятор", "счет", "считать", "год", "дата", "время", "день", "суток"}
+    ultimate_words = {"привет", "хай", "здарова", "ку", "йоу", "старт", "салам", "qq", "вернулся", "пока", "алибидерчи", "бб", "стоп", "калькулятор", "счет", "считать", "год", "дата", "время", "день", "суток", "открой", "сайт", "запусти"}
     for word in {"привет", "хай", "здарова", "ку", "старт", "салам", "qq", "йоу"}:
         if word in request_fix:
             return greeting(request_fix)
@@ -30,6 +33,12 @@ def variating(socket):
     for word in {"дата", "день", "время", "год", "суток"}:
         if word in request_fix:
             return date(request_fix)
+    for word in {"открой", "запусти"}:
+        if word in request_fix:
+            if "сайт" in request_fix:
+                return open_link(request_fix)
+            else:
+                return open_prog(request_fix)
     for word in ultimate_words:
         if word not in request_fix:
             result = ""
@@ -66,6 +75,37 @@ def comeback(socket):
     else:
         sct = def_sct + "!"
     return sct
+
+def open_link(socket):
+    links = {
+        "ютуб": "https://youtube.com",
+        "тг": "https://t.me/",
+        "дс": "https://discord.com/",
+        "вк": "https://vk.com/",
+        "гугл": "https://google.com/",
+        "яндекс": "https://ysndex.ru/",
+        "гитхаб": "https://github.com/",
+        "модринт": "https://modrinth.com/",
+        "маин": "https://minecraft.net/",
+    }
+    
+    for key in links:
+        if key in socket:
+            webbrowser.open_new(links[key])
+
+def open_prog(socket):
+    appdata = os.environ.get('APPDATA')
+    localappdata = os.environ.get('LOCALAPPDATA')
+    
+    #для подписчиков гитхаб и тг - добавьте сами пути на свои программы
+    progs = {
+        "пример": "C:/Program Files/пример"
+    }
+    
+    for key in progs:
+        if key in socket:
+            os.startfile(progs[key])
+            return f"Открываю {key}"
 
 def farewell(socket):
     def_sct = "До свиданнья"
