@@ -84,7 +84,7 @@ def open_link(socket):
         "вк": "https://vk.com/",
         "гугл": "https://google.com/",
         "яндекс": "https://ysndex.ru/",
-        "гитхаб": "https://github.com/MaxGamess/",
+        "гитхаб": "https://github.com/",
         "модринт": "https://modrinth.com/",
         "маин": "https://minecraft.net/",
     }
