@@ -14,7 +14,7 @@ socket = ""
 
 def variating(socket):
     request_fix = request.lower()
-    ultimate_words = {"привет", "хай", "здарова", "ку", "йоу", "старт", "салам", "qq", "вернулся", "пока", "алибидерчи", "бб", "стоп", "калькулятор", "счет", "считать", "год", "дата", "время", "день", "суток", "открой", "сайт", "запусти"}
+    ultimate_words = {"привет", "хай", "здарова", "ку", "йоу", "старт", "салам", "qq", "вернулся", "пока", "алибидерчи", "бб", "стоп", "калькулятор", "счет", "считать", "год", "дата", "время", "време", "день", "суток", "открой", "сайт", "запусти"}
     for word in {"привет", "хай", "здарова", "ку", "старт", "салам", "qq", "йоу"}:
         if word in request_fix:
             return greeting(request_fix)
@@ -30,7 +30,7 @@ def variating(socket):
             result = calculator(rqst)
             if result == "вернулся":
                 return comeback(result)
-    for word in {"дата", "день", "время", "год", "суток"}:
+    for word in {"дата", "день", "время", "време", "год", "суток"}:
         if word in request_fix:
             return date(request_fix)
     for word in {"открой", "запусти"}:
@@ -84,7 +84,7 @@ def open_link(socket):
         "вк": "https://vk.com/",
         "гугл": "https://google.com/",
         "яндекс": "https://ysndex.ru/",
-        "гитхаб": "https://github.com/",
+        "гитхаб": "https://github.com/MaxGamess/",
         "модринт": "https://modrinth.com/",
         "маин": "https://minecraft.net/",
     }
@@ -92,6 +92,7 @@ def open_link(socket):
     for key in links:
         if key in socket:
             webbrowser.open_new(links[key])
+            return f"Открываю сайт {key}"
 
 def open_prog(socket):
     appdata = os.environ.get('APPDATA')
@@ -99,7 +100,7 @@ def open_prog(socket):
     
     #для подписчиков гитхаб и тг - добавьте сами пути на свои программы
     progs = {
-        "пример": "C:/Program Files/пример"
+        "пример": "C:/Program Files/пример.exe",
     }
     
     for key in progs:
@@ -172,7 +173,7 @@ def date(socket):
         now_date = sct + today[:10]
         return now_date
     
-    elif "время" in socket and "суток" not in socket:
+    elif ("время" in socket or "време" in socket) and "суток" not in socket:
         now_time = f"{sct}{hours} часов, {minutes} минут, {seconds} секунд"
         return now_time
     
@@ -185,12 +186,12 @@ def date(socket):
         now_day = current_weekday.weekday()
         
         now_weekday = sct + days[now_day]
-        return sct + now_weekday
+        return now_weekday
     
     elif "год" in socket:
         today = str(datetime.now())
         now_day_year = today[:4]
-        return sct + now_day_year
+        return f"{sct}{now_day_year} год"
     
     elif "суток" in socket:
         if hours >= 0 and hours < 4: day_time = "ночь"
@@ -349,7 +350,10 @@ def calculator(socket):
 def say_async(socket):
     def _say():
         try:
-            engine = pyttsx3.init()
+            engine = pyttsx3.init('sapi5')
+            voices = engine.getProperty('voices')
+            engine.setProperty('voice', voice[0].id)
+            engine.setProperty('volume', 0.5)
             engine.say(socket)
             engine.runAndWait()
             engine.stop()
