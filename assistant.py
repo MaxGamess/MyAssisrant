@@ -8,13 +8,16 @@ import threading
 import webbrowser
 import subprocess
 import os
+from translate import Translator
 
 request = ""
 socket = ""
 
+translator = Translator(to_lang="ru")
+
 def variating(socket):
     request_fix = request.lower()
-    ultimate_words = {"привет", "хай", "здарова", "ку", "йоу", "старт", "салам", "qq", "вернулся", "пока", "алибидерчи", "бб", "стоп", "калькулятор", "счет", "считать", "год", "дата", "время", "време", "день", "суток", "открой", "сайт", "запусти"}
+    ultimate_words = {"привет", "хай", "здарова", "ку", "йоу", "старт", "салам", "qq", "вернулся", "пока", "алибидерчи", "бб", "стоп", "калькулятор", "счет", "считать", "год", "дата", "время", "време", "день", "суток", "открой", "сайт", "запусти","переведи", "перевод"}
     for word in {"привет", "хай", "здарова", "ку", "старт", "салам", "qq", "йоу"}:
         if word in request_fix and "калькулятор" not in request_fix:
             return greeting(request_fix)
@@ -39,6 +42,11 @@ def variating(socket):
                 return open_link(request_fix)
             else:
                 return open_prog(request_fix)
+    for word in {"переведи", "перевод"}:
+        if word in request_fix:
+            index = request_fix.find(word)
+            result = request_fix[index + len(word):]
+            return translator(result)
     for word in ultimate_words:
         if word not in request_fix:
             result = ""
@@ -75,6 +83,15 @@ def comeback(socket):
     else:
         sct = def_sct + "!"
     return sct
+
+def translator(socket):
+    sct = "Перевод"
+    translator = Translator(to_lang="ru")
+    result = translator.translate(socket)
+    if socket.count(" ") > 1:
+        return f"{sct} данного предложения: {result}"
+    else:
+        return f"{sct} данного слова: {result}"
 
 def open_link(socket):
     links = {
