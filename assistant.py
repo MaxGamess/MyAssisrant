@@ -16,7 +16,7 @@ def variating(socket):
     request_fix = request.lower()
     ultimate_words = {"привет", "хай", "здарова", "ку", "йоу", "старт", "салам", "qq", "вернулся", "пока", "алибидерчи", "бб", "стоп", "калькулятор", "счет", "считать", "год", "дата", "время", "време", "день", "суток", "открой", "сайт", "запусти"}
     for word in {"привет", "хай", "здарова", "ку", "старт", "салам", "qq", "йоу"}:
-        if word in request_fix:
+        if word in request_fix and "калькулятор" not in request_fix:
             return greeting(request_fix)
     for word in {"вернулся"}:
         if word in request_fix:
