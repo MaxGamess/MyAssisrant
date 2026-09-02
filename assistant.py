@@ -1,7 +1,6 @@
 from time import *
 from random import *
 from sys import *
-import datetime
 from datetime import datetime, date, time, timedelta
 import pyttsx3
 import threading
