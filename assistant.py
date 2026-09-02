@@ -273,9 +273,7 @@ def calculator(socket):
                 
                 inner_expr = cleaned[start + 1:end]
                 
-                numbers = []
-                operators_list = []
-                current_num = ""
+                numbers, operators_list, current_num = [], [], ""
                 
                 for char in inner_expr:
                     if char.isdigit() or char == '.':
@@ -325,9 +323,7 @@ def calculator(socket):
                 
                 cleaned = cleaned[:start] + str(result) + cleaned[end + 1:]
             
-            numbers = []
-            operators_list = []
-            current_num = ""
+            numbers, operators_list, current_num = [], [], ""
             
             for char in cleaned:
                 if char.isdigit() or char == '.':
