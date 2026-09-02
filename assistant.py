@@ -44,9 +44,17 @@ def variating(socket):
                 return open_prog(request_fix)
     for word in {"переведи", "перевод"}:
         if word in request_fix:
-            index = request_fix.find(word)
-            result = request_fix[index + len(word):]
-            return translator(result)
+            lang = "ru"
+            if "русский" in request_fix:
+                index = request_fix.find("русский")
+                result = request_fix[index + len("русский"):]
+                lang = "ru"
+                return translator(result, lang)
+            elif "английский" in request_fix:
+                index = request_fix.find("английский")
+                result = request_fix[index + len("английский"):]
+                lang = "en"
+                return translator(result, lang)
     for word in ultimate_words:
         if word not in request_fix:
             result = ""
@@ -84,9 +92,12 @@ def comeback(socket):
         sct = def_sct + "!"
     return sct
 
-def translator(socket):
+def translator(socket, lang):
     sct = "Перевод"
-    translator = Translator(to_lang="ru")
+    if lang == "ru":
+        translator = Translator(to_lang="ru")
+    elif lang == "en":
+        translator = Translator(to_lang="en")
     result = translator.translate(socket)
     if socket.count(" ") > 1:
         return f"{sct} данного предложения: {result}"
