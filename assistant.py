@@ -12,48 +12,50 @@ from translate import Translator
 request = ""
 socket = ""
 
-translator = Translator(to_lang="ru")
-
 def variating(socket):
     request_fix = request.lower()
-    ultimate_words = {"привет", "хай", "здарова", "ку", "йоу", "старт", "салам", "qq", "вернулся", "пока", "алибидерчи", "бб", "стоп", "калькулятор", "счет", "считать", "год", "дата", "время", "време", "день", "суток", "открой", "сайт", "запусти","переведи", "перевод"}
-    for word in {"привет", "хай", "здарова", "ку", "старт", "салам", "qq", "йоу"}:
-        if word in request_fix and "калькулятор" not in request_fix:
-            return greeting(request_fix)
-    for word in {"вернулся"}:
-        if word in request_fix:
-            return comeback(request_fix)
-    for word in {"пока", "алибидерчи", "бб", "стоп"}:
-        if word in request_fix:
-            return farewell(request_fix)
-    for word in {"калькулятор", "счет", "считать"}:
-        if word in request_fix:
-            rqst = ""
-            result = calculator(rqst)
-            if result == "вернулся":
-                return comeback(result)
-    for word in {"дата", "день", "время", "време", "год", "суток"}:
-        if word in request_fix:
-            return date(request_fix)
-    for word in {"открой", "запусти"}:
-        if word in request_fix:
-            if "сайт" in request_fix:
-                return open_link(request_fix)
-            else:
-                return open_prog(request_fix)
-    for word in {"переведи", "перевод"}:
-        if word in request_fix:
+    ultimate_words = {"привет", "хай", "здарова", "ку", "йоу", "старт", "салам", "qq", "вернулся", "пока", "алибидерчи", "бб", "стоп", "калькулятор", "счет", "считать", "год", "дата", "время", "време", "день", "суток", "открой", "сайт", "запусти", "переведи", "перевод"}
+    varity = {
+        'greeting': {"привет", "хай", "здарова", "ку", "старт", "салам", "qq", "йоу"},
+        'farewell': {"пока", "алибидерчи", "бб", "стоп"},
+        'comeback': {"вернулся"},
+        'calc': {"калькулятор", "счет", "считать"},
+        'date': {"дата", "день", "время", "време", "год", "суток"},
+        'open': {"открой", "запусти"},
+        'translate': {"переведи", "перевод"}
+    }
+    words = set(request_fix.split())
+    
+    if varity['greeting'] & words and "калькулятор" not in request_fix:
+        return greeting(request_fix)
+    if varity['comeback'] & words:
+        return comeback(request_fix)
+    if varity['farewell'] & words:
+        return farewell(request_fix)
+    if varity['calc'] & words:
+        rqst = ""
+        result = calculator(rqst)
+        if result == "вернулся":
+            return comeback(result)
+    if varity['date'] & words:
+        return date(request_fix)
+    if varity['open'] & words:
+        if "сайт" in request_fix:
+            return open_link(request_fix)
+        else:
+            return open_prog(request_fix)
+    if varity['translate'] & words:
+        lang = "ru"
+        if "русский" in request_fix:
+            index = request_fix.find("русский")
+            result = request_fix[index + len("русский"):]
             lang = "ru"
-            if "русский" in request_fix:
-                index = request_fix.find("русский")
-                result = request_fix[index + len("русский"):]
-                lang = "ru"
-                return translator(result, lang)
-            elif "английский" in request_fix:
-                index = request_fix.find("английский")
-                result = request_fix[index + len("английский"):]
-                lang = "en"
-                return translator(result, lang)
+            return translator(result, lang)
+        elif "английский" in request_fix:
+            index = request_fix.find("английский")
+            result = request_fix[index + len("английский"):]
+            lang = "en"
+            return translator(result, lang)
     for word in ultimate_words:
         if word not in request_fix:
             result = ""
