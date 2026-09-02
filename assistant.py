@@ -93,11 +93,14 @@ def comeback(socket):
 
 def translator(socket, lang):
     sct = "Перевод"
-    if lang == "ru":
-        translator = Translator(to_lang="ru")
-    elif lang == "en":
-        translator = Translator(to_lang="en")
+    translators = {
+        "ru": Translator(to_lang="ru"),
+        "en": Translator(to_lang="en")
+    }
+    
+    translator = translators[lang]
     result = translator.translate(socket)
+    
     if socket.count(" ") > 1:
         return f"{sct} данного предложения: {result}"
     else:
