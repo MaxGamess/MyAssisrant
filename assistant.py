@@ -46,16 +46,20 @@ def variating(socket):
             return open_prog(request_fix)
     if varity['translate'] & words:
         lang = "ru"
-        if "русский" in request_fix:
-            index = request_fix.find("русский")
-            result = request_fix[index + len("русский"):]
-            lang = "ru"
-            return translator(result, lang)
-        elif "английский" in request_fix:
-            index = request_fix.find("английский")
-            result = request_fix[index + len("английский"):]
-            lang = "en"
-            return translator(result, lang)
+        language_map = {
+            "русский": "ru",
+            "английский": "en", 
+            "испанский": "es",
+            "французский": "fr",
+            "немецкий": "de"
+        }
+        for lang_name, lang_code in language_map.items():
+            if lang_name in request_fix:
+                index = request_fix.find(lang_name)
+                text_to_translate = request_fix[index + len(lang_name):].strip()
+                lang = lang_code
+                break
+        return translator(text_to_translate, lang)
     for word in ultimate_words:
         if word not in request_fix:
             result = ""
@@ -97,7 +101,10 @@ def translator(socket, lang):
     sct = "Перевод"
     translators = {
         "ru": Translator(to_lang="ru"),
-        "en": Translator(to_lang="en")
+        "en": Translator(to_lang="en"),
+        "es": Translator(to_lang="es"),
+        "fr": Translator(to_lang="fr"),
+        "de": Translator(to_lang="de"),
     }
     
     translator = translators[lang]
