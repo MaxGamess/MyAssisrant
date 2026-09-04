@@ -9,8 +9,7 @@ import subprocess
 import os
 from translate import Translator
 
-request = ""
-socket = ""
+request, socket = "", ""
 
 def variating(socket):
     request_fix = request.lower()
